@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using SportsStore.Domain.Abstract;
 
@@ -11,6 +9,7 @@ namespace SportsStore.WebUI.Controllers
 	{
 		//note 1. добавим readonly, обезопасив себя он подмены репозитория после внедрения в конструктор
 		private IProductRepository repository;
+
 		public ProductController(IProductRepository productRepository)
 		{
 			//note 2. добавим ограждающее условие, что бы быть уверенным -- внедрение прошло успешно
@@ -23,7 +22,9 @@ namespace SportsStore.WebUI.Controllers
 
 		public ViewResult List()
 		{
-			return View(repository.Products);
+			//note 3. Добавлен ToList() для получения списка продуктов до передачи данных в представление
+			//Отложенные методы расширения LINQ http://smarly.net/pro-asp-net-mvc-4/introducing-asp-net-mvc-4/essential-language-features/performing-language-integrated-queries#text-14929
+			return View(repository.Products.ToList());
 		}
 	}
 }
