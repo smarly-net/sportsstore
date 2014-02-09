@@ -13,8 +13,9 @@ namespace SportsStore.WebUI.Controllers
 	{
 		//note 7. добавим readonly, обезопасив себя он подмены репозитория после внедрения в конструктор
 		private readonly IProductRepository repository;
+		private readonly IOrderProcessor orderProcessor;
 
-		public CartController(IProductRepository repo)
+		public CartController(IProductRepository repo, IOrderProcessor proc)
 		{
 			//note 8. добавим ограждающее условие, что бы быть уверенным -- внедрение прошло успешно
 			//больше информации см. http://smarly.net/dependency-injection-in-net/di-catalog/di-patterns/constructor-injection#text-22427
@@ -22,7 +23,11 @@ namespace SportsStore.WebUI.Controllers
 			if (repo == null)
 				throw new ArgumentNullException("repo");
 
+			if (proc == null)
+				throw new ArgumentNullException("proc");
+
 			repository = repo;
+			orderProcessor = proc;
 		}
 
 		public ViewResult Index(Cart cart, string returnUrl)
@@ -58,6 +63,28 @@ namespace SportsStore.WebUI.Controllers
 		{
 			return PartialView(cart);
 		}
+		public ViewResult Checkout()
+		{
+			return View(new ShippingDetails());
+		}
 
+		[HttpPost]
+		public ViewResult Checkout(Cart cart, ShippingDetails shippingDetails)
+		{
+			if (!cart.Lines.Any())
+			{
+				ModelState.AddModelError("", "Sorry, your cart is empty!");
+			}
+			if (ModelState.IsValid)
+			{
+				orderProcessor.ProcessOrder(cart, shippingDetails);
+				cart.Clear();
+				return View("Completed");
+			}
+			else
+			{
+				return View(shippingDetails);
+			}
+		}
 	}
 }
