@@ -12,6 +12,7 @@ namespace SportsStore.WebUI.Controllers
 
 		private IProductRepository repository;
 		public int PageSize = 4;
+
 		public ProductController(IProductRepository productRepository)
 		{
 			//note 2. добавим ограждающее условие, что бы быть уверенным -- внедрение прошло успешно
@@ -23,26 +24,29 @@ namespace SportsStore.WebUI.Controllers
 			this.repository = productRepository;
 		}
 
-		public ViewResult List(int page = 1)
+		public ViewResult List(string category, int page = 1)
 		{
 			//note 3. Добавлен ToList() для получения списка продуктов до передачи данных в представление
 			//Отложенные методы расширения LINQ http://smarly.net/pro-asp-net-mvc-4/introducing-asp-net-mvc-4/essential-language-features/performing-language-integrated-queries#text-14929
 
-			ProductsListViewModel model = new ProductsListViewModel
+			ProductsListViewModel viewModel = new ProductsListViewModel
 			{
 				Products = repository.Products
+					.Where(p => category == null || p.Category == category)
 					.OrderBy(p => p.ProductID)
-					.Skip((page - 1) * PageSize)
+					.Skip((page - 1)*PageSize)
 					.Take(PageSize).ToList(),
 				PagingInfo = new PagingInfo
 				{
 					CurrentPage = page,
 					ItemsPerPage = PageSize,
-					TotalItems = repository.Products.Count()
-				}
+					TotalItems = category == null ?
+						repository.Products.Count() :
+						repository.Products.Count(e => e.Category == category)
+				},
+				CurrentCategory = category
 			};
-
-			return View(model);
+			return View(viewModel);
 		}
 	}
 }

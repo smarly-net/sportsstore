@@ -87,7 +87,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UnitTest1.cs" />
+    <Compile Include="ProductControllerUnitTests.cs" />
+    <Compile Include="NavControllerUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
