@@ -90,6 +90,7 @@
     <Compile Include="ProductControllerUnitTests.cs" />
     <Compile Include="NavControllerUnitTests.cs" />
     <Compile Include="CartTests.cs" />
+    <Compile Include="AdminControllerUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
