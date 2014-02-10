@@ -91,6 +91,7 @@
     <Compile Include="NavControllerUnitTests.cs" />
     <Compile Include="CartTests.cs" />
     <Compile Include="AdminControllerUnitTests.cs" />
+    <Compile Include="AccountControllerUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
